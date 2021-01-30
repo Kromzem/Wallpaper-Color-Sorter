@@ -1,6 +1,6 @@
 # wallpaper_color_sorter
 
-Tool to sort wallpapers by their dominant color in hue order.
+A tool for my wife to sort her wallpapers based on the dominant color <3
 
 ## Getting Started
 
