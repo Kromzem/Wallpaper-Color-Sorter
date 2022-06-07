@@ -23,14 +23,20 @@ class _CoreState extends State<Core> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.only(bottom: 20.0), child: PathRow("Source path", (path) => _sourcePath = path)),
-          Padding(padding: EdgeInsets.only(bottom: 20.0), child: PathRow("Destination path", (path) => _destinationPath = path)),
+          Padding(
+              padding: EdgeInsets.only(bottom: 20.0),
+              child: PathRow("Source path", (path) => _sourcePath = path)),
+          Padding(
+              padding: EdgeInsets.only(bottom: 20.0),
+              child: PathRow(
+                  "Destination path", (path) => _destinationPath = path)),
           TextButton(
             onPressed: () {
               _sort();
             },
             child: Text("Start"),
-            style: TextButton.styleFrom(primary: Colors.white, backgroundColor: Colors.blue),
+            style: TextButton.styleFrom(
+                primary: Colors.white, backgroundColor: Colors.blue),
           )
         ],
       ));
@@ -38,22 +44,27 @@ class _CoreState extends State<Core> {
   void _sort() async {
     print("Start sorting ...\n");
 
-    var dialog = ProgressDialog(context, type: ProgressDialogType.Download)..style(progress: 0.0, maxProgress: 100.0, progressWidget: CircularProgressIndicator(), message: "Sorting ...");
+    var dialog = ProgressDialog(context, type: ProgressDialogType.Download)
+      ..style(
+          progress: 0.0,
+          maxProgress: 100.0,
+          progressWidget: CircularProgressIndicator(),
+          message: "Sorting ...");
     await dialog.show();
 
     var sourceDirectory = Directory(_sourcePath);
     var destinationDirectory = Directory(_destinationPath);
 
-    destinationDirectory.list().forEach((element) {
-      element.deleteSync();
+    await destinationDirectory.list().forEach((element) async {
+      await element.delete();
     });
 
-    var files = sourceDirectory.listSync();
+    var files = await sourceDirectory.list().toList();
     var fileCount = files.length;
     var percent = 0.0;
-
+    
     var palette = ColorPalette.empty();
-    for(var element in files) {
+    for (var element in files) {
       var generator = await PaletteGenerator.fromImageProvider(Image.file(element).image);
 
       print("$element loaded!");
@@ -66,14 +77,14 @@ class _CoreState extends State<Core> {
     palette.sortByHue();
 
     var index = 0;
-    palette.colors.forEach((element) {
+    await palette.colors.forEach((element) async {
       var data = element as WallpaperData;
 
       try {
         index++;
 
         var file = File(data.path);
-        file.copySync("${destinationDirectory.path}\\$index.${file.path.split(".").last}");
+        await file.copy("${_destinationPath}${Platform.pathSeparator}${index.toString().padLeft(20, '0')}.${file.path.split(".").last}");
 
         print("${data.path} copied!");
       } on Exception catch (ex) {
@@ -92,5 +103,6 @@ class _CoreState extends State<Core> {
 class WallpaperData extends RgbColor {
   final String path;
 
-  WallpaperData(this.path, Color color) : super(color.red, color.green, color.blue);
+  WallpaperData(this.path, Color color)
+      : super(color.red, color.green, color.blue);
 }

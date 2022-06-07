@@ -1,4 +1,3 @@
-import 'package:filepicker_windows/filepicker_windows.dart';
 import 'package:flutter/material.dart';
 
 class PathRow extends StatefulWidget {
@@ -35,13 +34,13 @@ class _PathRowState extends State<PathRow> {
               flex: 5,
               child: TextButton(
                 onPressed: () {
-                  var filePicker = OpenFilePicker()..forceFileSystemItems = false;
+                  /*var filePicker = FilePick()..forceFileSystemItems = false;
 
                   var file = filePicker.getFile();
                   setState(() {
                     _path = file.parent.path;
                     _pathChanged(_path);
-                  });
+                  });*/
                 },
                 child: Icon(Icons.more_horiz),
                 style: TextButton.styleFrom(primary: Colors.white, backgroundColor: Colors.blue),
